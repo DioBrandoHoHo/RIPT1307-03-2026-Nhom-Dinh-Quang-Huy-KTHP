@@ -1,6 +1,6 @@
 import React from 'react';
 import { type User } from '../types';
-import { staticDevices, staticStudents } from './leaderboardData';
+import { staticDevices, staticStudents } from './LeaderboardData';
 
 interface LeaderboardProps {
   isMini?: boolean;
