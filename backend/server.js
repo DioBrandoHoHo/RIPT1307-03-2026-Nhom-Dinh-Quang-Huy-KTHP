@@ -44,7 +44,7 @@ app.use('/api', appRoutes);
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './render_final_db.sqlite',
+  storage: './render_ultimate_db.sqlite',
   logging: false
 });
 
@@ -56,7 +56,8 @@ const Device = sequelize.define('Device', {
   imageUrl: { type: DataTypes.STRING, allowNull: true } 
 });
 
-sequelize.sync({ force: true }).then(async () => {  console.log('Database đã được đồng bộ và cập nhật thành công!');
+sequelize.sync().then(async () => {
+  console.log('Database đã được đồng bộ và cập nhật thành công!');
   try {
     const checkDevice = await Device.findOne();
     if (!checkDevice) {
