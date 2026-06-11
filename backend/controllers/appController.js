@@ -20,17 +20,9 @@ const checkAndSendAlertEmails = async () => {
       if (!user || !user.email) continue;
 
       if (diffDays === 3) {
-        try {
-          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REMIND');
-        } catch (mailErr) {
-          console.error("Lỗi gửi mail REMIND tự động:", mailErr);
-        }
+        sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REMIND').catch(e => console.error(e));
       } else if (diffDays < 0) {
-        try {
-          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'OVERDUE');
-        } catch (mailErr) {
-          console.error("Lỗi gửi mail OVERDUE tự động:", mailErr);
-        }
+        sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'OVERDUE').catch(e => console.error(e));
       }
     }
   } catch (error) {
@@ -328,21 +320,13 @@ exports.updateOrderStatus = async (req, res) => {
       device.quantity_available -= order.quantity;
       await device.save();
       if (user && user.email) {
-        try {
-          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'APPROVED');
-        } catch (mailErr) {
-          console.error("Lỗi gửi mail APPROVED:", mailErr);
-        }
+        sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'APPROVED').catch(e => console.error(e));
       }
     }
 
     if (status === 'Từ chối' && order.status === 'Chờ duyệt') {
       if (user && user.email) {
-        try {
-          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REJECTED');
-        } catch (mailErr) {
-          console.error("Lỗi gửi mail REJECTED:", mailErr);
-        }
+        sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REJECTED').catch(e => console.error(e));
       }
     }
 
@@ -355,11 +339,7 @@ exports.updateOrderStatus = async (req, res) => {
         await device.save();
       }
       if (user && user.email) {
-        try {
-          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'RETURNED');
-        } catch (mailErr) {
-          console.error("Lỗi gửi mail RETURNED:", mailErr);
-        }
+        sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'RETURNED').catch(e => console.error(e));
       }
     }
 
