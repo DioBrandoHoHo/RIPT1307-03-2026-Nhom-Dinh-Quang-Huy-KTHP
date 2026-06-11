@@ -76,7 +76,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
   const fetchDevices = async (): Promise<void> => {
     try {
-      const res = await axiosInstance.get<Device[]>(`${API_URL}/devices`);
+      const res = await axios.get<Device[]>(`${API_URL}/devices`);
       setDevices(res.data);
       if (res.data.length > 0 && !selectedDevice) {
         setSelectedDevice(res.data[0].name);
@@ -91,7 +91,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
       const url = currentUser.role === 'admin' 
         ? `${API_URL}/orders` 
         : `${API_URL}/orders?username=${currentUser.username}`;
-      const res = await axiosInstance.get<Order[]>(url);
+      const res = await axios.get<Order[]>(url);
       setOrders(res.data);
     } catch (err) {
       console.error(err);
@@ -116,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
     const textReason = reason.trim() || 'Nhu cầu cá nhân';
 
     try {
-      await axiosInstance.post(`${API_URL}/orders`, { 
+      await axios.post(`${API_URL}/orders`, { 
         username: currentUser.username, 
         deviceName: selectedDevice,
         quantity: borrowQty,
@@ -153,7 +153,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
       return;
     }
     try {
-      await axiosInstance.put(`${API_URL}/orders/${targetId}`, { status });
+      await axios.put(`${API_URL}/orders/${targetId}`, { status });
       toast.success(`Cập nhật trạng thái thành công: ${status}`);
       
       await Promise.all([
@@ -175,7 +175,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
     try {
       if (editingDeviceId) {
-        await axiosInstance.put(`${API_URL}/devices/${editingDeviceId}`, {
+        await axios.put(`${API_URL}/devices/${editingDeviceId}`, {
           name: inputName,
           category: inputCategory.trim(),
           quantity_total: inputQuantityTotal,
@@ -183,7 +183,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
         });
         toast.success('Cập nhật thiết bị thành công!');
       } else {
-        await axiosInstance.post(`${API_URL}/devices`, {
+        await axios.post(`${API_URL}/devices`, {
           name: inputName,
           category: inputCategory.trim(),
           quantity_total: inputQuantityTotal,
@@ -220,7 +220,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
   const executeDeleteDevice = async () => {
     if (!deviceToDelete) return;
     try {
-      await axiosInstance.delete(`${API_URL}/devices/${deviceToDelete}`);
+      await axios.delete(`${API_URL}/devices/${deviceToDelete}`);
       toast.success('Xóa thiết bị thành công!');
       setDeviceToDelete(null);
       fetchDevices();
