@@ -11,51 +11,16 @@ const app = express();
 
 app.use(express.json());
 
-app.post('/api/register', appController.register);
-app.post('/api/check-username', appController.checkUsername);
-
 app.use(cors({
   origin: [
-    'https://luminous-biscotti-a9c907.netlify.app',
-
- ],
+    'https://luminous-biscotti-a9c907.netlify.app'
+  ],
   credentials: true
 }));
 
-app.post('/api/auth/login', (req, res) => {
-  const { username, password } = req.body;
-
-  if (username === 'admin' && password === '123456') {
-    return res.json({
-      success: true,
-      message: 'Đăng nhập admin thành công!',
-      token: 'mock-jwt-token-admin-xyz123',
-      user: {
-        username: 'admin',
-        role: 'admin',
-        email: 'admin@gmail.com'
-      }
-    });
-  }
-
-  if (username === 'sinhvien' && password === '123456') {
-    return res.json({
-      success: true,
-      message: 'Đăng nhập sinh viên thành công!',
-      token: 'mock-jwt-token-student-abc456',
-      user: {
-        username: 'sinhvien',
-        role: 'student',
-        email: 'sinhvien@gmail.com'
-      }
-    });
-  }
-
-  return res.status(401).json({
-    success: false,
-    message: 'Sai tài khoản hoặc mật khẩu!'
-  });
-});
+app.post('/api/register', appController.register);
+app.post('/api/check-username', appController.checkUsername);
+app.post('/api/auth/login', appController.login);
 
 app.use('/api', appRoutes);
 
