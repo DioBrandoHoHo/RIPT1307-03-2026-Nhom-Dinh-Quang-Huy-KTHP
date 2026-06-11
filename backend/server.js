@@ -1,20 +1,24 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
+
 const appRoutes = require('./routes/appRoutes');
+const appController = require('./controllers/appController');
 const { sendEmail, sendOverdueNotification } = require('./services/emailService');
-const { sequelize, Device } = require('./models');
+const { sequelize, Device, User, Order } = require('./models');
 
 const app = express();
 
 app.use(express.json());
 
+app.post('/api/register', appController.register);
+app.post('/api/check-username', appController.checkUsername);
+
 app.use(cors({
   origin: [
     'https://luminous-biscotti-a9c907.netlify.app',
-    'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
-    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp.vercel.app',
-    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp-8om4-8dbjjy0a0.vercel.app'
-  ],
+
+ ],
   credentials: true
 }));
 
@@ -82,7 +86,7 @@ sequelize.sync()
             quantity_total: 5,
             quantity_available: 5
           }
-        ]);
+        ], { ignoreDuplicates: true });
 
         console.log('Đã nạp dữ liệu mẫu');
       }

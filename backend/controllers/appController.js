@@ -1,6 +1,7 @@
 const { User, Device, Order, sequelize } = require('../models');
 const { Sequelize } = require('sequelize');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -500,6 +501,16 @@ exports.updateOrderStatus = async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({ message: 'Lỗi hệ thống khi cập nhật trạng thái!' });
+  }
+};
+
+exports.checkUsername = async (req, res) => {
+  try {
+    const { username } = req.body;
+    const user = await User.findOne({ where: { username } });
+    return res.json({ exists: !!user });
+  } catch (error) {
+    return res.status(500).json({ message: 'Lỗi kiểm tra username' });
   }
 };
 
