@@ -9,7 +9,7 @@ import HistoryModal from '../components/HistoryModal';
 import Leaderboard from '../components/Leaderboard'; 
 import UserInfo from './UserInfo';
 
-const API_URL = 'https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api';
+const API_URL = 'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/apiapi';
 
 interface DashboardProps {
   user: User;
