@@ -1,4 +1,4 @@
-const { User, Device, Order, sequelize } = require('../models');
+const { User, Device, Order, sequelize } = require('../models/index');
 const { Sequelize } = require('sequelize');
 const { sendAutomatedEmail } = require('../services/emailService');
 
