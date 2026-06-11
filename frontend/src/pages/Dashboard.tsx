@@ -265,7 +265,10 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
   const totalDeviceTypes = devices.length;
   
-  const totalQuantityInKho = devices.reduce((acc, curr) => acc + (curr.quantity_total ?? 0), 0);
+  const totalQuantityInKho = devices.reduce(
+  (acc, curr) => acc + (curr.quantity_available ?? 0),
+  0
+);
 
   const totalPendingDuyet = orders.filter(o => o.status === 'Chờ duyệt').length;
   
