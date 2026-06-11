@@ -27,29 +27,9 @@ const Order = sequelize.define('Order', {
   deviceName: { type: DataTypes.STRING, allowNull: false },
   quantity: { type: DataTypes.INTEGER, defaultValue: 1 },
   startDate: { type: DataTypes.STRING, allowNull: true }, 
-  endDate: { type: DataTypes.STRING, allowNull: true },   
+  endDate: { type: DataTypes.STRING, allowNull: true },    
   reason: { type: DataTypes.STRING, allowNull: true },
   status: { type: DataTypes.ENUM('Chờ duyệt', 'Đã duyệt', 'Từ chối', 'Đã trả', 'Quá hạn', 'Yêu cầu trả'), defaultValue: 'Chờ duyệt' }
-});
-
-Order.belongsTo(Device, { 
-  foreignKey: 'deviceName', 
-  targetKey: 'name', 
-  as: 'Device' 
-});
-Device.hasMany(Order, { 
-  foreignKey: 'deviceName', 
-  sourceKey: 'name' 
-});
-
-Order.belongsTo(User, { 
-  foreignKey: 'username', 
-  targetKey: 'username', 
-  as: 'User' 
-});
-User.hasMany(Order, { 
-  foreignKey: 'username', 
-  sourceKey: 'username' 
 });
 
 module.exports = { sequelize, User, Device, Order };
