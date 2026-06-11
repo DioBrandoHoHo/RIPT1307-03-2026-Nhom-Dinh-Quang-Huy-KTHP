@@ -189,7 +189,7 @@ const checkAndSendAlertEmails = async () => {
   }
 };
 
-sequelize.sync({ force: true })
+sequelize.sync()
   .then(() => {
     return Device.bulkCreate([
       { name: "Giáo trình Cơ sở Dữ liệu", category: "Sách & Giáo trình", quantity_total: 165, quantity_available: 161, imageUrl: "https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?w=400" },

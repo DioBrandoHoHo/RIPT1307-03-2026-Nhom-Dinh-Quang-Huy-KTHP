@@ -1,7 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const { Sequelize, DataTypes } = require('sequelize');
 const appRoutes = require('./routes/appRoutes');
+
+const { sequelize, Device } = require('./models');
 
 const app = express();
 
@@ -18,83 +19,82 @@ app.use(cors({
 
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
-  
+
   if (username === 'admin' && password === '123456') {
     return res.json({
       success: true,
       message: 'Đăng nhập admin thành công!',
       token: 'mock-jwt-token-admin-xyz123',
-      user: { username: 'admin', role: 'admin', email: 'admin@gmail.com' }
+      user: {
+        username: 'admin',
+        role: 'admin',
+        email: 'admin@gmail.com'
+      }
     });
   }
-  
+
   if (username === 'sinhvien' && password === '123456') {
     return res.json({
       success: true,
       message: 'Đăng nhập sinh viên thành công!',
       token: 'mock-jwt-token-student-abc456',
-      user: { username: 'sinhvien', role: 'student', email: 'sinhvien@gmail.com' }
+      user: {
+        username: 'sinhvien',
+        role: 'student',
+        email: 'sinhvien@gmail.com'
+      }
     });
   }
 
-  return res.status(401).json({ success: false, message: 'Sai tài khoản hoặc mật khẩu!' });
+  return res.status(401).json({
+    success: false,
+    message: 'Sai tài khoản hoặc mật khẩu!'
+  });
 });
 
 app.use('/api', appRoutes);
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './render_ultimate_db.sqlite',
-  logging: false
-});
+sequelize.sync()
+  .then(async () => {
+    console.log('Database đồng bộ thành công');
 
-const Device = sequelize.define('Device', {
-  name: { type: DataTypes.STRING, allowNull: false, unique: true },
-  category: { type: DataTypes.STRING },
-  quantity_total: { type: DataTypes.INTEGER, allowNull: false },
-  quantity_available: { type: DataTypes.INTEGER, allowNull: false },
-  imageUrl: { type: DataTypes.STRING, allowNull: true } 
-});
+    try {
+      const checkDevice = await Device.findOne();
 
-const Order = sequelize.models.Order;
+      if (!checkDevice) {
+        await Device.bulkCreate([
+          {
+            name: 'Máy tính Dell XPS 13',
+            category: 'Laptop',
+            quantity_total: 10,
+            quantity_available: 10
+          },
+          {
+            name: 'Chuột Logitech G Pro X',
+            category: 'Phụ kiện',
+            quantity_total: 15,
+            quantity_available: 15
+          },
+          {
+            name: 'Bàn phím cơ Neo65 Sonic HE',
+            category: 'Phụ kiện',
+            quantity_total: 5,
+            quantity_available: 5
+          }
+        ]);
 
-sequelize.sync().then(async () => {
-  console.log('Database đã được đồng bộ và cập nhật thành công!');
-  try {
-    const checkDevice = await Device.findOne();
-    if (!checkDevice) {
-      await Device.create({
-        name: 'Máy tính Dell XPS 13',
-        category: 'Laptop',
-        quantity_total: 10,
-        quantity_available: 10
-      });
-      await Device.create({
-        name: 'Chuột Logitech G Pro X',
-        category: 'Phụ kiện',
-        quantity_total: 15,
-        quantity_available: 15
-      });
-      await Device.create({
-        name: 'Bàn phím cơ Neo65 Sonic HE',
-        category: 'Phụ kiện',
-        quantity_total: 5,
-        quantity_available: 5
-      });
-      console.log('=== ĐÃ NẠP SẴN DANH SÁCH THIẾT BỊ KHỚP VỚI MODEL ===');
-    } else {
-      console.log('=== DỮ LIỆU THIẾT BỊ ĐÃ TỒN TẠI ===');
+        console.log('Đã nạp dữ liệu mẫu');
+      }
+    } catch (error) {
+      console.error('Lỗi tạo dữ liệu mẫu:', error);
     }
 
-  } catch (dbError) {
-    console.error('Lỗi khởi tạo dữ liệu test:', dbError.message);
-  }
+    const PORT = process.env.PORT || 5000;
 
-}).catch((err) => {
-  console.error('Lỗi kết nối cơ sở dữ liệu:', err);
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend đang chạy online mượt mà tại Port ${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server chạy tại port ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.error('Lỗi kết nối database:', error);
+  });
