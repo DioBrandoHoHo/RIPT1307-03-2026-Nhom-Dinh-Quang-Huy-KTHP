@@ -37,7 +37,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     const delayDebounceFn = setTimeout(async () => {
       setIsCheckingUsername(true);
       try {
-        const res = await axios.post<{ exists: boolean }>('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/apiapi/check-username', { username });
+        const res = await axios.post<{ exists: boolean }>('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/api/check-username', { username });
         
         if (res.data.exists) {
           setIsUsernameTaken(true);
@@ -77,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
     if (isLoginView) {
       try {
-        const res = await axios.post<{ user: User }>('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/apiapi/login', {
+        const res = await axios.post<{ user: User }>('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/api/login', {
           username,
           password,
         });
@@ -103,7 +103,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       }
 
       try {
-        const res = await axios.post('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/apiapi/register', {
+        const res = await axios.post('https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app/api/register', {
           username,
           password,
           confirmPassword,
