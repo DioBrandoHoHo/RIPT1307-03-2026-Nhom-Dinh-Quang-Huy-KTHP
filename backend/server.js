@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { sequelize, Device } = require('./models');
+const { Sequelize, DataTypes } = require('sequelize');
 const appRoutes = require('./routes/appRoutes');
 
 const app = express();
@@ -12,6 +12,7 @@ app.use(cors({
   credentials: true
 }));
 
+// CHIÊU BÀI KHÓA CHẾT ĐĂNG NHẬP TĨNH - KHÔNG SỢ LỖI DATABASE USERS
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   
@@ -37,6 +38,21 @@ app.post('/api/auth/login', (req, res) => {
 });
 
 app.use('/api', appRoutes);
+
+// ĐỊNH NGHĨA FILE DATABASE MỚI TINH TRỰC TIẾP TẠI ĐÂY - BỎ QUA FILE MODELS/INDEX.JS LỖI CŨ
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: './fresh_render_db.sqlite',
+  logging: false
+});
+
+const Device = sequelize.define('Device', {
+  name: { type: DataTypes.STRING, allowNull: false, unique: true },
+  category: { type: DataTypes.STRING },
+  quantity_total: { type: DataTypes.INTEGER, allowNull: false },
+  quantity_available: { type: DataTypes.INTEGER, allowNull: false },
+  imageUrl: { type: DataTypes.STRING, allowNull: true } 
+});
 
 sequelize.sync({ alter: true }).then(async () => {
   console.log('Database đã được đồng bộ và cập nhật thành công!');

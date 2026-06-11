@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './database.sqlite',
+  storage: './lab_gear_db.sqlite',
   logging: false
 });
 
@@ -31,5 +31,10 @@ const Order = sequelize.define('Order', {
   reason: { type: DataTypes.STRING, allowNull: true },
   status: { type: DataTypes.ENUM('Chờ duyệt', 'Đã duyệt', 'Từ chối', 'Đã trả', 'Quá hạn', 'Yêu cầu trả'), defaultValue: 'Chờ duyệt' }
 });
+
+Order.belongsTo(Device, { foreignKey: 'deviceName', targetKey: 'name', as: 'Device' });
+Device.hasMany(Order, { foreignKey: 'deviceName', sourceKey: 'name' });
+Order.belongsTo(User, { foreignKey: 'username', targetKey: 'username', as: 'User' });
+User.hasMany(Order, { foreignKey: 'username', sourceKey: 'username' });
 
 module.exports = { sequelize, User, Device, Order };
