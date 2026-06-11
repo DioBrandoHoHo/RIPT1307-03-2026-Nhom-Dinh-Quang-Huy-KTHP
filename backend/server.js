@@ -8,11 +8,14 @@ const app = express();
 app.use(express.json());
 
 app.use(cors({
-  origin: 'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
+  origin: [
+    'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
+    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp.vercel.app',
+    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp-1ynj-5lqkapx5v.vercel.app'
+  ],
   credentials: true
 }));
 
-// CHIÊU BÀI KHÓA CHẾT ĐĂNG NHẬP TĨNH - KHÔNG SỢ LỖI DATABASE USERS
 app.post('/api/auth/login', (req, res) => {
   const { username, password } = req.body;
   
@@ -39,10 +42,9 @@ app.post('/api/auth/login', (req, res) => {
 
 app.use('/api', appRoutes);
 
-// ĐỊNH NGHĨA FILE DATABASE MỚI TINH TRỰC TIẾP TẠI ĐÂY - BỎ QUA FILE MODELS/INDEX.JS LỖI CŨ
 const sequelize = new Sequelize({
   dialect: 'sqlite',
-  storage: './fresh_render_db.sqlite',
+  storage: './render_final_db.sqlite',
   logging: false
 });
 
