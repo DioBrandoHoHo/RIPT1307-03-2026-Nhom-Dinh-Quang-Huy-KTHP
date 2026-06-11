@@ -9,7 +9,7 @@ import HistoryModal from '../components/HistoryModal';
 import Leaderboard from '../components/Leaderboard'; 
 import UserInfo from './UserInfo';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com//api';
 
 interface DashboardProps {
   user: User;

@@ -91,7 +91,7 @@ Yêu cầu khởi chạy song song 2 cửa sổ terminal độc lập:
 Khởi chạy Backend Server (Terminal 1):
 cd backend
 node server.js
-Địa chỉ hoạt động: http://localhost:5000
+Địa chỉ hoạt động: https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/
 
 Khởi chạy Frontend Client (Terminal 2):
 cd frontend

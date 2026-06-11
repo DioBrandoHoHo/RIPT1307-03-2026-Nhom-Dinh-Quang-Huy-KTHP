@@ -37,7 +37,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     const delayDebounceFn = setTimeout(async () => {
       setIsCheckingUsername(true);
       try {
-        const res = await axios.post<{ exists: boolean }>('http://localhost:5000/api/check-username', { username });
+        const res = await axios.post<{ exists: boolean }>('https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api/check-username', { username });
         
         if (res.data.exists) {
           setIsUsernameTaken(true);
@@ -77,7 +77,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
     if (isLoginView) {
       try {
-        const res = await axios.post<{ user: User }>('http://localhost:5000/api/login', {
+        const res = await axios.post<{ user: User }>('https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api/login', {
           username,
           password,
         });
@@ -103,7 +103,7 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
       }
 
       try {
-        const res = await axios.post('http://localhost:5000/api/register', {
+        const res = await axios.post('https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api/register', {
           username,
           password,
           confirmPassword,
