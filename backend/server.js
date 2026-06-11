@@ -7,6 +7,7 @@ const app = express();
 
 app.use(express.json());
 
+
 app.use(cors({
   origin: 'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
   credentials: true
@@ -14,7 +15,8 @@ app.use(cors({
 
 app.use('/api', appRoutes);
 
-sequelize.sync({ force: true }).then(async () => {
+
+sequelize.sync({ alter: true }).then(async () => {
   console.log('Database đã được đồng bộ và cập nhật thành công!');
 
   try {
@@ -79,4 +81,9 @@ sequelize.sync({ force: true }).then(async () => {
 
 }).catch((err) => {
   console.error('Lỗi kết nối cơ sở dữ liệu:', err);
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Backend đang chạy online mượt mà tại Port ${PORT}`);
 });
