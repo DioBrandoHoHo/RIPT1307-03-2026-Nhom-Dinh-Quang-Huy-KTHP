@@ -10,6 +10,7 @@ app.use(express.json());
 
 app.use(cors({
   origin: [
+    'https://luminous-biscotti-a9c907.netlify.app',
     'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
     'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp.vercel.app',
     'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp-8om4-8dbjjy0a0.vercel.app'
