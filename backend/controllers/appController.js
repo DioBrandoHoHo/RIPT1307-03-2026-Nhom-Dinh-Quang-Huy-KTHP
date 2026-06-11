@@ -20,9 +20,17 @@ const checkAndSendAlertEmails = async () => {
       if (!user || !user.email) continue;
 
       if (diffDays === 3) {
-        await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REMIND');
+        try {
+          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REMIND');
+        } catch (mailErr) {
+          console.error("Lỗi gửi mail REMIND tự động:", mailErr);
+        }
       } else if (diffDays < 0) {
-        await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'OVERDUE');
+        try {
+          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'OVERDUE');
+        } catch (mailErr) {
+          console.error("Lỗi gửi mail OVERDUE tự động:", mailErr);
+        }
       }
     }
   } catch (error) {
@@ -307,57 +315,61 @@ exports.updateOrderStatus = async (req, res) => {
       order = await Order.findOne({ where: { id: reqId } });
     }
     if (!order) {
-      return res.status(404).json({ message: `Không tìm thấy đơn mượn với ID: ${reqId}` });
+      return res.status(404).json({ success: false, message: `Không tìm thấy đơn mượn với ID: ${reqId}` });
     }
+
     const device = await Device.findOne({ where: { name: order.deviceName } });
     const user = await User.findOne({ where: { username: order.username } });
 
     if (status === 'Đã duyệt' && order.status === 'Chờ duyệt') {
       if (!device || device.quantity_available < order.quantity) {
-        return res.status(400).json({ message: 'Thiết bị trong kho hiện không đủ để phê duyệt!' });
+        return res.status(400).json({ success: false, message: 'Thiết bị trong kho hiện không đủ để phê duyệt!' });
+      }
+      device.quantity_available -= order.quantity;
+      await device.save();
+      if (user && user.email) {
+        try {
+          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'APPROVED');
+        } catch (mailErr) {
+          console.error("Lỗi gửi mail APPROVED:", mailErr);
+        }
       }
     }
 
-    res.status(200).json({ message: `Đã cập nhật trạng thái đơn sang: ${status}`, order });
-
-    setImmediate(async () => {
-      try {
-        if (status === 'Đã duyệt' && order.status === 'Chờ duyệt') {
-          device.quantity_available -= order.quantity;
-          await device.save();
-          if (user && user.email) {
-            await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'APPROVED');
-          }
+    if (status === 'Từ chối' && order.status === 'Chờ duyệt') {
+      if (user && user.email) {
+        try {
+          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REJECTED');
+        } catch (mailErr) {
+          console.error("Lỗi gửi mail REJECTED:", mailErr);
         }
-
-        if (status === 'Từ chối' && order.status === 'Chờ duyệt') {
-          if (user && user.email) {
-            await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'REJECTED');
-          }
-        }
-
-        if (status === 'Đã trả' && order.status !== 'Đã trả') {
-          if (device) {
-            device.quantity_available += order.quantity;
-            if (device.quantity_available > device.quantity_total) {
-              device.quantity_available = device.quantity_total;
-            }
-            await device.save();
-          }
-          if (user && user.email) {
-            await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'RETURNED');
-          }
-        }
-
-        order.status = status;
-        await order.save();
-      } catch (bgError) {
-        console.error("Lỗi xử lý ngầm dữ liệu đơn hàng:", bgError);
       }
-    });
+    }
 
+    if (status === 'Đã trả' && order.status !== 'Đã trả') {
+      if (device) {
+        device.quantity_available += order.quantity;
+        if (device.quantity_available > device.quantity_total) {
+          device.quantity_available = device.quantity_total;
+        }
+        await device.save();
+      }
+      if (user && user.email) {
+        try {
+          await sendAutomatedEmail(user.email, user.username, order.deviceName, order.quantity, order.endDate, 'RETURNED');
+        } catch (mailErr) {
+          console.error("Lỗi gửi mail RETURNED:", mailErr);
+        }
+      }
+    }
+
+    order.status = status;
+    await order.save();
+
+    return res.status(200).json({ success: true, message: `Đã cập nhật trạng thái đơn sang: ${status}`, order });
   } catch (error) {
-    return res.status(500).json({ message: 'Lỗi hệ thống khi cập nhật trạng thái!' });
+    console.error("Lỗi hệ thống khi cập nhật trạng thái:", error);
+    return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi cập nhật trạng thái!' });
   }
 };
 
