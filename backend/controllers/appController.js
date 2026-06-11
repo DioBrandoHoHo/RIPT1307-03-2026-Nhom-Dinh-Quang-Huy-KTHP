@@ -315,7 +315,7 @@ exports.updateOrderStatus = async (req, res) => {
       order = await Order.findOne({ where: { id: reqId } });
     }
     if (!order) {
-      return res.status(404).json({ success: false, message: `Không tìm thấy đơn mượn với ID: ${reqId}` });
+      return res.status(404).json({ message: `Không tìm thấy đơn mượn với ID: ${reqId}` });
     }
 
     const device = await Device.findOne({ where: { name: order.deviceName } });
@@ -323,7 +323,7 @@ exports.updateOrderStatus = async (req, res) => {
 
     if (status === 'Đã duyệt' && order.status === 'Chờ duyệt') {
       if (!device || device.quantity_available < order.quantity) {
-        return res.status(400).json({ success: false, message: 'Thiết bị trong kho hiện không đủ để phê duyệt!' });
+        return res.status(400).json({ message: 'Thiết bị trong kho hiện không đủ để phê duyệt!' });
       }
       device.quantity_available -= order.quantity;
       await device.save();
@@ -366,10 +366,10 @@ exports.updateOrderStatus = async (req, res) => {
     order.status = status;
     await order.save();
 
-    return res.status(200).json({ success: true, message: `Đã cập nhật trạng thái đơn sang: ${status}`, order });
+    return res.status(200).json(order);
   } catch (error) {
     console.error("Lỗi hệ thống khi cập nhật trạng thái:", error);
-    return res.status(500).json({ success: false, message: 'Lỗi hệ thống khi cập nhật trạng thái!' });
+    return res.status(500).json({ message: 'Lỗi hệ thống khi cập nhật trạng thái!' });
   }
 };
 
