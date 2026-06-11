@@ -14,7 +14,7 @@ app.use(cors({
 
 app.use('/api', appRoutes);
 
-sequelize.sync({ force: true }).then(async () => {
+sequelize.sync({ alter: true }).then(async () => {
   console.log('Database đã được đồng bộ và cập nhật thành công!');
 
   try {
@@ -29,6 +29,8 @@ sequelize.sync({ force: true }).then(async () => {
     });
     if (adminCreated) {
       console.log('=== ĐÃ TỰ ĐỘNG TẠO TÀI KHOẢN TEST: admin / 123456 ===');
+    } else {
+      console.log('=== TÀI KHOẢN ADMIN ĐÃ TỒN TẠI ===');
     }
 
     const [studentUser, studentCreated] = await User.findOrCreate({
@@ -42,6 +44,8 @@ sequelize.sync({ force: true }).then(async () => {
     });
     if (studentCreated) {
       console.log('=== ĐÃ TỰ ĐỘNG TẠO TÀI KHOẢN TEST: sinhvien / 123456 ===');
+    } else {
+      console.log('=== TÀI KHOẢN SINHVIEN ĐÃ TỒN TẠI ===');
     }
 
     const checkDevice = await Device.findOne();
@@ -66,7 +70,7 @@ sequelize.sync({ force: true }).then(async () => {
       });
       console.log('=== ĐÃ NẠP SẴN DANH SÁCH THIẾT BỊ KHỚP VỚI MODEL ===');
     } else {
-      console.log('=== DỮ LIỆU THIẾT BỊ ĐÃ TỒN TẠI - BỎ QUA BƯỚC NẠP SẴN ===');
+      console.log('=== DỮ LIỆU THIẾT BỊ ĐÃ TỒN TẠI ===');
     }
 
   } catch (dbError) {
@@ -75,9 +79,4 @@ sequelize.sync({ force: true }).then(async () => {
 
 }).catch((err) => {
   console.error('Lỗi kết nối cơ sở dữ liệu:', err);
-});
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Backend đang chạy online mượt mà tại Port ${PORT}`);
 });
