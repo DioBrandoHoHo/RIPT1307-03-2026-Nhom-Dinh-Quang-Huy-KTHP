@@ -14,7 +14,7 @@ app.use(cors({
 
 app.use('/api', appRoutes);
 
-sequelize.sync({ alter: true }).then(async () => {
+sequelize.sync({ force: true }).then(async () => {
   console.log('Database đã được đồng bộ và cập nhật thành công!');
 
   try {
