@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'accclone6106@gmail.com',
-    pass: 'wjqg jdwu klgk pcje'
+    user: process.env.EMAIL_USER || 'accclone6106@gmail.com',
+    pass: process.env.EMAIL_PASS || 'wjqg jdwu klgk pcje'
   }
 }); 
 
@@ -150,7 +150,7 @@ const sendAutomatedEmail = async (toEmail, studentName, deviceName, quantity, en
 
   try {
     await transporter.sendMail({
-      from: '"Trung Tâm Quản Lý Thiết Bị Lab" <accclone6106@gmail.com>',
+      from: `"Trung Tâm Quản Lý Thiết Bị Lab" <${process.env.EMAIL_USER || 'accclone6106@gmail.com'}>`,
       to: toEmail,
       subject: subject,
       html: htmlContent
@@ -160,6 +160,8 @@ const sendAutomatedEmail = async (toEmail, studentName, deviceName, quantity, en
     console.error(`-> Lỗi gửi mail loại [${type}]:`, error);
   }
 };
+
+exports.sendAutomatedEmail = sendAutomatedEmail;
 
 const checkAndSendAlertEmails = async () => {
   try {
@@ -222,7 +224,7 @@ sequelize.sync()
       { name: "Chuột ATK Blazing Sky F1 Ultimate", category: "Phụ kiện máy tính", quantity_total: 10, quantity_available: 10, imageUrl: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=400" },
       { name: "Bàn phím IQUNIX EV63", category: "Phụ kiện máy tính", quantity_total: 4, quantity_available: 4, imageUrl: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=400" },
       { name: "Sách Phân tích dữ liệu với Python", category: "Sách & Giáo trình", quantity_total: 55, quantity_available: 55, imageUrl: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" }
-    ]);
+    ], { ignoreDuplicates: true });
   })
   .then(() => {
     return User.bulkCreate([

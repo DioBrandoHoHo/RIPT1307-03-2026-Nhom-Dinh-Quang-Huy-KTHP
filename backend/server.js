@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const appRoutes = require('./routes/appRoutes');
-
+const { sendEmail, sendOverdueNotification } = require('./services/emailService');
 const { sequelize, Device } = require('./models');
 
 const app = express();
