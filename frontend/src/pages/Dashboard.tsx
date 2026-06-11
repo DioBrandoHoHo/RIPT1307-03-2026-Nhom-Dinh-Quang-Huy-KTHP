@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axiosInstance from 'axios';
+import axios from 'axios';
 import { type User, type Device, type Order } from '../types'; 
 import { toast } from 'react-hot-toast'; 
 
@@ -265,7 +265,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
   const totalDeviceTypes = devices.length;
   
-  const totalQuantityInKho = devices.reduce((acc, curr) => acc + (curr.quantity_available ?? 0), 0);
+  const totalQuantityInKho = devices.reduce((acc, curr) => acc + (curr.quantity_total ?? 0), 0);
 
   const totalPendingDuyet = orders.filter(o => o.status === 'Chờ duyệt').length;
   
@@ -394,7 +394,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
                 </div>
                 
                 <form onSubmit={handleAddOrUpdateDevice} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                  <div>
+                  <div style={{ gridColumn: editingDeviceId ? 'span 1' : 'span 1' }}>
                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 700, color: '#1e293b' }}>Tên thiết bị</label>
                     <input type="text" className="form-input" value={inputName} onChange={e => setInputName(e.target.value)} placeholder="Nhập tên thiết bị..." style={{ border: '1px solid #94a3b8' }} />
                   </div>
@@ -443,7 +443,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
                       </div>
                     )}
                   </div>
-                  
+
                   <div>
                     <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 700, color: '#1e293b' }}>Tổng số lượng phân bổ</label>
                     <input type="number" className="form-input" value={inputQuantityTotal || ''} onChange={e => setInputQuantityTotal(Number(e.target.value))} placeholder="Nhập số lượng tổng..." style={{ border: '1px solid #94a3b8' }} />
@@ -668,7 +668,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
             <div style={{ background: '#ffffff', padding: '25px', borderRadius: '24px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '2px solid #cbd5e1', marginTop: '35px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '20px', color: '#0f172a' }}>Danh sách Đơn đăng ký chờ Duyệt Mượn</h3>
-              {orders.filter(o => o.status === 'Chờ duyệt' && isNotExpired(o.endDate)).length === 0 ? (
+              {orders.filter(o => o.status === 'Chờ duyệt').length === 0 ? (
                 <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '14px' }}>Không có đơn chờ duyệt mượn hợp lệ nào.</p>
               ) : (
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
@@ -682,7 +682,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.filter(o => o.status === 'Chờ duyệt' && isNotExpired(o.endDate)).map((order) => (
+                    {orders.filter(o => o.status === 'Chờ duyệt').map((order) => (
                       <tr key={order.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                         <td style={{ padding: '12px', fontWeight: 500 }}>{order.username}</td>
                         <td style={{ padding: '12px' }}>{order.deviceName}</td>
@@ -701,7 +701,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
 
             <div style={{ background: '#ffffff', padding: '25px', borderRadius: '24px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', border: '2px solid #cbd5e1', marginTop: '35px' }}>
               <h3 style={{ fontSize: '18px', fontWeight: 700, marginBottom: '20px', color: '#3b82f6' }}>Danh sách Đơn báo Trả cần Xác nhận nhận lại đồ</h3>
-              {orders.filter(o => o.status === 'Chờ trả' && isNotExpired(o.endDate)).length === 0 ? (
+              {orders.filter(o => o.status === 'Chờ trả').length === 0 ? (
                 <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '14px' }}>Hiện tại không có thiết bị nào cần thu hồi.</p>
               ) : (
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
@@ -714,7 +714,7 @@ const Dashboard: React.FC<DashboardProps> = ({ user: initialUser, onLogout, onUp
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.filter(o => o.status === 'Chờ trả' && isNotExpired(o.endDate)).map((order) => (
+                    {orders.filter(o => o.status === 'Chờ trả').map((order) => (
                       <tr key={order.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                         <td style={{ padding: '12px', fontWeight: 500 }}>{order.username}</td>
                         <td style={{ padding: '12px', color: '#0f172a', fontWeight: 500 }}>{order.deviceName}</td>

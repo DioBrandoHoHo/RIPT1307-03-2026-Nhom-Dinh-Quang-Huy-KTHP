@@ -77,10 +77,15 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
 
     if (isLoginView) {
       try {
-        const res = await axios.post<{ user: User }>('https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api/auth/login', {
+        const res = await axios.post<{ user: User; token?: string }>('https://ript1307-03-2026-nhom-dinh-quang-huy-kthp.onrender.com/api/auth/login', {
           username,
           password,
         });
+        
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+        }
+        
         toast.success('Đăng nhập hệ thống thành công!');
         onLoginSuccess(res.data.user);
       } catch (err: any) {
@@ -178,7 +183,9 @@ const Login: React.FC<LoginProps> = ({ onLoginSuccess }) => {
     pointerEvents: 'none' as const
   };
 
-  const isSubmitDisabled = !isLoginView && (isUsernameTaken || !isPasswordValid || !username || !password);
+  const isSubmitDisabled = isLoginView 
+    ? (!username.trim() || !password.trim())
+    : (isUsernameTaken || !isPasswordValid || !username.trim() || !password.trim());
 
   return (
     <div style={{ 

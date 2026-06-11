@@ -11,7 +11,7 @@ app.use(cors({
   origin: [
     'https://ript-1307-03-2026-nhom-dinh-git-209829-diobrandohohos-projects.vercel.app',
     'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp.vercel.app',
-    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp-1ynj-5lqkapx5v.vercel.app'
+    'https://ript-1307-03-2026-nhom-dinh-quang-huy-kthp-8om4-8dbjjy0a0.vercel.app'
   ],
   credentials: true
 }));
@@ -55,6 +55,8 @@ const Device = sequelize.define('Device', {
   quantity_available: { type: DataTypes.INTEGER, allowNull: false },
   imageUrl: { type: DataTypes.STRING, allowNull: true } 
 });
+
+const Order = sequelize.models.Order;
 
 sequelize.sync().then(async () => {
   console.log('Database đã được đồng bộ và cập nhật thành công!');
